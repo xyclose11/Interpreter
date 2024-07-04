@@ -46,7 +46,14 @@ func (l *Lexer) NextToken() token.Token {
 			tok = newToken(token.ILLEGAL, l.ch)
 		}
 	case '=':
-		tok = newToken(token.ASSIGN, l.ch)
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			literal := string(ch) + string(l.ch)
+			tok = token.Token{Type: token.EQ, Literal: literal}
+		} else {
+			tok = newToken(token.ASSIGN, l.ch)
+		}
 	case ';':
 		tok = newToken(token.SEMICOLON, l.ch)
 
@@ -75,7 +82,14 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.ASTERISK, l.ch)
 
 	case '!':
-		tok = newToken(token.BANG, l.ch)
+		if l.peekChar() == '=' {
+			ch := l.ch                                              // Get current char
+			l.readChar()                                            // Increment to get next char
+			literal := string(ch) + string(l.ch)                    // Create new literal
+			tok = token.Token{Type: token.NOT_EQ, Literal: literal} // Create token
+		} else {
+			tok = newToken(token.BANG, l.ch)
+		}
 
 	case '<':
 		tok = newToken(token.LT, l.ch)
@@ -128,7 +142,15 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
-//IP: readChar() add UTF-8/UNICODE support
-//readNumber() support floats, hex notation, octal, etc
+// Similar to readChar except it does not increment l at all
+func (l *Lexer) peekChar() byte {
+	if l.readPosition >= len(l.input) {
+		return 0
+	} else {
+		return l.input[l.readPosition]
+	}
+}
 
-// ON PAGE 24
+// IP: readChar() add UTF-8/UNICODE support
+// readNumber() support floats, hex notation, octal, etc
+// create method 'makeTwoCharToken' that will peek and advance if it found the correct token PAGE 26
