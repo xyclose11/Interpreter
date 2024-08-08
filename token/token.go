@@ -9,7 +9,7 @@ type Token struct {
 
 const (
 	ILLEGAL = "ILLEGAL"
-	EOF     = "EOF" // Tells parser to stop "End Of File"
+	EOF     = "EOF" // Tells parser.md to stop "End Of File"
 
 	// Identifiers + literals
 	IDENT = "IDENT" // Variables, function names etc
